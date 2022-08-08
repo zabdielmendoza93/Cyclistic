@@ -1,0 +1,52 @@
+---
+title: "Análisis"
+author: "Zabdiel Emilio Moreno Mendoza"
+date: "2022-08-04"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+viajes_cyclistic1 <- read_csv( "Extracto de viajes cyclistic.csv")
+prom1 <- read_csv( "Promedio duracion de viajes por dia.csv")
+prom2 <- read_csv( "Promedio duracion de viajes por miembros.csv")
+prom3 <- read_csv( "Promedio duracion de viajes por dia contra miembros.csv")
+can1  <- read_csv( "Cantidad de viajes por dia.csv")
+can2  <- read_csv( "Cantidad de viajes por tipo de miembro.csv")
+can3  <- read_csv( "Cantidad de viajes por dia y tipo de miembro.csv")
+
+```
+
+## Análisis
+
+Para comenzar unifiqué todos los conjuntos de datos en uno solo, esto mediante full_join()
+
+```{r}
+viajes_cyclistic1
+```
+
+Posteriormente saque promedios por datos y comparando los datos como los siguientes:
+
+```{r}
+prom1
+prom2
+prom3
+```
+
+Filtré los resultados menores a 30 segundos y aquellos mayores a un día, pues los considere atípicos, los menores a 30 segundos que tuvieran la misma estación de comienzo y fin pues son bastante cortos como para un paseo y los mayores a un día porque los clientes casuales eran los únicos que podían superar las 25 horas.
+
+Con esos datos también calcule la cantidad de viajes agrupado por días, tipo de clientes y meses:
+```{r}
+can1
+
+can2
+
+can3
+```
+
+Con esa información note algunos patrones (que señalare en el siguiente documento), entonces guarde la información necesaria en archivos .csv para poder visualizarla posteriormente.
+
+El script con los comandos utilizados tiene el nombre de “analisis.R” y se encuentra en la misma carpeta que este informe.

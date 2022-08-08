@@ -1,0 +1,15 @@
+Dia de la semana,Tipo de Usuario,Cantidad de viajes,Fecha
+domingo,Casual,336835,01/02/22
+domingo,Miembro Cyclistic,299549,01/02/22
+lunes,Casual,208253,02/02/22
+lunes,Miembro Cyclistic,360851,02/02/22
+martes,Casual,189619,03/02/22
+martes,Miembro Cyclistic,402534,03/02/22
+miércoles,Casual,195967,04/02/22
+miércoles,Miembro Cyclistic,401001,04/02/22
+jueves,Casual,226104,05/02/22
+jueves,Miembro Cyclistic,404638,05/02/22
+viernes,Casual,255826,06/02/22
+viernes,Miembro Cyclistic,355499,06/02/22
+sábado,Casual,395126,07/02/22
+sábado,Miembro Cyclistic,335325,07/02/22

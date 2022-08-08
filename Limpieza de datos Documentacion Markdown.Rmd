@@ -1,0 +1,90 @@
+---
+title: "Procesando Datos"
+author: "Zabdiel Emilio Moreno Mendoza"
+output:
+  word_document: default
+  html_document: default
+date: "2022-08-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+julio2021 <- read_csv("2021_07_clean.csv")
+prom1 <- read_csv( "Promedio duracion de viajes por dia.csv")
+prom2 <- read_csv( "Promedio duracion de viajes por miembros.csv")
+prom3 <- read_csv( "Promedio duracion de viajes por dia contra miembros.csv")
+can1  <- read_csv( "Cantidad de viajes por dia.csv")
+can2  <- read_csv( "Cantidad de viajes por tipo de miembro.csv")
+can3  <- read_csv( "Cantidad de viajes por dia y tipo de miembro.csv")
+```
+
+## Limpieza de datos
+
+Decidí utilizar R pues me facilita todas las operaciones a realizar como crear columnas pues no debo hacer mes por mes, con R puedo utilizar un script para hacerlo con todos los meses.
+
+Utilice los datos de la hora de comienzo de viaje y de termino de viaje pues a diferencia de otros datos no presenta datos nulos, ademas nos da una idea de la cantidad de tiempo que dura un viaje.
+
+Deje a un lado los datos del nombre de la estación de comienzo y fin, así como los datos de coordenadas geográficas. Solo me quede con:
+
+-   Ride_id
+-   Rideable_type
+-   Started_at
+-   Ended_at
+-   Start_station_id
+-   End_station_id
+-   Member_casual
+
+Quedaron 12 conjuntos de datos como este:
+
+```{r}
+    julio2021
+```
+
+Se creo la columna "ride_lenght" que es la diferencia entre el fin del viaje y el comienzo.
+
+```{r}
+julio2021 <- julio2021 %>% mutate(ride_length = hms::as_hms(ended_at - started_at))
+julio2021 %>% select(ride_id,ride_length)
+```
+
+Para comprobar la integridad de los datos decidí ver si la diferencia entre el comienzo del viaje y el fin del mismo era negativa.
+
+```{r}
+filter(julio2021,ride_length<=0) %>% select(ride_id,ride_length)
+```
+
+Me percaté de que sí eran negativas pero por muy poco tiempo, pensé en que probablemente esos viajes no habrían sido mas que personas cambiando la bicicleta de lugar en la misma estación, entonces verifique que la estación de inicio fuera la misma de la estación de termino.
+
+```{r}
+filter(julio2021,ride_length<=0 & start_station_id == end_station_id) %>% select(ride_id,ride_length)
+```
+
+Los números no coincidían, pero recordé que había nulos, entonces decidí contar el numero de nulos que cumplían con esas condiciones
+
+```{r}
+
+totales <- filter(julio2021,ride_length<=0) %>% 
+  count()
+nulos <- filter(julio2021,ride_length<=0 & (is.na(start_station_id) | is.na(end_station_id))) %>% 
+  count()
+noNulos <- filter(julio2021,ride_length<=0 & !(is.na(start_station_id) | is.na(end_station_id)) & start_station_id == end_station_id) %>% 
+  count()
+
+totales$n
+nulos$n
+noNulos$n
+noNulos$n + nulos$n == totales$n
+
+```
+
+Listo, los datos coinciden, entonces son íntegros.
+
+Por ultimo creamos la columna week_day que nos muestra el día de la semana en que se empezó el viaje.
+
+```{r }
+julio2021 %>% mutate(day_of_week = wday(started_at,label = TRUE,abbr = FALSE) ) %>% select(ride_id,day_of_week)
+```
+
+El script con los comandos utilizados tiene el nombre de "Procesar.R" y se encuentra en la misma carpeta que este informe.
